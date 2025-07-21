@@ -17,15 +17,30 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ProtonVPN.Api.Contracts.Common;
+using ProtonVPN.Api.Contracts.Auth;
+using ProtonVPN.Client.Settings.Contracts;
 
-namespace ProtonVPN.Api.Deserializers
+namespace ProtonVPN.Client.Logic.Auth;
+
+public abstract class AuthenticatorBase
 {
-    public interface IBaseResponseMessageDeserializer
+    protected readonly ISettings Settings;
+
+    protected AuthenticatorBase(ISettings settings)
     {
-        Task<BaseResponse> DeserializeAsync(HttpResponseMessage response, CancellationToken cancellationToken);
+        Settings = settings;
+    }
+
+    protected void SaveAuthSessionDetails(AuthResponse? authResponse)
+    {
+        if (authResponse is null)
+        {
+            return;
+        }
+
+        Settings.UserId = authResponse.UserId;
+        Settings.AccessToken = authResponse.AccessToken;
+        Settings.UniqueSessionId = authResponse.UniqueSessionId;
+        Settings.RefreshToken = authResponse.RefreshToken;
     }
 }

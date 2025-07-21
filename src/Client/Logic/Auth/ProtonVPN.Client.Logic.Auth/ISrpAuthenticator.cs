@@ -17,15 +17,14 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ProtonVPN.Api.Contracts.Common;
 
-namespace ProtonVPN.Api.Deserializers
+using System.Security;
+using ProtonVPN.Client.Logic.Auth.Contracts.Models;
+
+namespace ProtonVPN.Client.Logic.Auth;
+
+public interface ISrpAuthenticator
 {
-    public interface IBaseResponseMessageDeserializer
-    {
-        Task<BaseResponse> DeserializeAsync(HttpResponseMessage response, CancellationToken cancellationToken);
-    }
+    Task<AuthResult> LoginUserAsync(string username, SecureString password, CancellationToken cancellationToken);
+    Task<AuthResult> SendTwoFactorCodeAsync(string code, CancellationToken cancellationToken);
 }

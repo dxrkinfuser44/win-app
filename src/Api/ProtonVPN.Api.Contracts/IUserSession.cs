@@ -17,15 +17,9 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ProtonVPN.Api.Contracts.Common;
+namespace ProtonVPN.Api.Contracts;
 
-namespace ProtonVPN.Api.Deserializers
+public interface IUserSession
 {
-    public interface IBaseResponseMessageDeserializer
-    {
-        Task<BaseResponse> DeserializeAsync(HttpResponseMessage response, CancellationToken cancellationToken);
-    }
+    bool IsLoggedIn { get; }
 }

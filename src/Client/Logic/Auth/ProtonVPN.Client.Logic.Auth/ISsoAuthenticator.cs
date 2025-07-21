@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025 Proton AG
  *
  * This file is part of ProtonVPN.
@@ -17,15 +17,12 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ProtonVPN.Api.Contracts.Common;
+using ProtonVPN.Client.Logic.Auth.Contracts.Models;
 
-namespace ProtonVPN.Api.Deserializers
+namespace ProtonVPN.Client.Logic.Auth;
+
+public interface ISsoAuthenticator
 {
-    public interface IBaseResponseMessageDeserializer
-    {
-        Task<BaseResponse> DeserializeAsync(HttpResponseMessage response, CancellationToken cancellationToken);
-    }
+    Task<SsoAuthResult> StartSsoAuthAsync(string username, CancellationToken cancellationToken);
+    Task<AuthResult> CompleteSsoAuthAsync(string ssoResponseToken, CancellationToken cancellationToken);
 }

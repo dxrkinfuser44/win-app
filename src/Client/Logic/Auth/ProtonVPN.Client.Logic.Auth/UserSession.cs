@@ -17,15 +17,22 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ProtonVPN.Api.Contracts.Common;
+using ProtonVPN.Api.Contracts;
+using ProtonVPN.Client.EventMessaging.Contracts;
+using ProtonVPN.Client.Logic.Auth.Contracts.Enums;
+using ProtonVPN.Client.Logic.Auth.Contracts.Messages;
 
-namespace ProtonVPN.Api.Deserializers
+namespace ProtonVPN.Client.Logic.Auth;
+
+public class UserSession : IUserSession,
+    IEventMessageReceiver<AuthenticationStatusChanged>
 {
-    public interface IBaseResponseMessageDeserializer
+    private AuthenticationStatus _authenticationStatus;
+
+    public bool IsLoggedIn => _authenticationStatus == AuthenticationStatus.LoggedIn;
+
+    public void Receive(AuthenticationStatusChanged message)
     {
-        Task<BaseResponse> DeserializeAsync(HttpResponseMessage response, CancellationToken cancellationToken);
+        _authenticationStatus = message.AuthenticationStatus;
     }
 }

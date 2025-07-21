@@ -17,15 +17,11 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using ProtonVPN.Api.Contracts.Common;
+namespace ProtonVPN.Client.Logic.Connection.GuestHole;
 
-namespace ProtonVPN.Api.Deserializers
+public class GuestHoleException : Exception
 {
-    public interface IBaseResponseMessageDeserializer
+    public GuestHoleException(string message) : base(message)
     {
-        Task<BaseResponse> DeserializeAsync(HttpResponseMessage response, CancellationToken cancellationToken);
     }
 }
