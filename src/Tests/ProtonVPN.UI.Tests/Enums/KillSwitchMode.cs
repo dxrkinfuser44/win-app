@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2024 Proton AG
+ * Copyright (c) 2025 Proton AG
  *
  * This file is part of ProtonVPN.
  *
@@ -17,29 +17,10 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Threading;
-using ProtonVPN.UI.Tests.Enums;
-using ProtonVPN.UI.Tests.Robots;
-using ProtonVPN.UI.Tests.TestBase;
+namespace ProtonVPN.UI.Tests.Enums;
 
-namespace ProtonVPN.UI.Tests.TestsHelper;
-public class CommonUiFlows : BaseTest
+public enum KillSwitchMode
 {
-    public static HomeRobot FullLogin(TestUserData testUser)
-    {
-        LoginRobot
-            .Login(testUser);
-
-        NavigationRobot
-            .Verify.IsOnMainPage()
-                   .IsOnHomePage();
-
-        HomeRobot
-            .DismissWelcomeModal();
-
-        // Remove when VPNWIN-2599 is implemented. 
-        Thread.Sleep(TestConstants.AnimationDelay);
-
-        return new HomeRobot();
-    }
+    Standard = 1,
+    Advanced = 2,
 }
