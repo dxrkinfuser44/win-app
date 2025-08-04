@@ -17,14 +17,10 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProtonVPN.Common.Core.Networking;
-using ProtonVPN.StatisticalEvents.Dimensions.Mappers;
+namespace ProtonVPN.StatisticalEvents.Dimensions.Mappers.Bases;
 
-namespace ProtonVPN.StatisticalEvents.Tests.DimensionMapping;
-
-[TestClass]
-public class VpnProtocolMapperTest : DimensionMapperTestBase<VpnProtocol, VpnProtocolDimensionMapper>
+public abstract class OnOffDimensionMapperBase : DimensionMapperBase
 {
-    protected override Func<VpnProtocolDimensionMapper, VpnProtocol?, string> MapFunction => (mapper, value) => mapper.Map(value);
+    public const string ON = "on";
+    public const string OFF = "off";
 }
