@@ -103,6 +103,12 @@ stages:
   - dotnet restore ProtonVpn.sln
   - dotnet build ProtonVpn.sln
 
+.default_installer_needs: &default_installer_needs
+  - project: $IP_LIST_BUILDER_REPO_NAMESPACE
+    job: ipv6chaos
+    ref: master
+    artifacts: true
+
 build-release-x64:
   extends: .build-script
   only:
@@ -320,6 +326,7 @@ unit-tests-with-coverage:
 
 build-installer-release-x64:
   needs:
+    - *default_installer_needs
     - generate-guest-holes
     - build-release-x64
   extends:
@@ -333,6 +340,7 @@ build-installer-release-x64:
 
 build-installer-debug-x64:
   needs:
+    - *default_installer_needs
     - generate-guest-holes
     - build-debug-x64
   extends:
@@ -347,6 +355,7 @@ build-installer-debug-x64:
 
 build-installer-debug-arm64:
   needs:
+    - *default_installer_needs
     - generate-guest-holes
     - build-debug-arm64
   extends:
@@ -361,6 +370,7 @@ build-installer-debug-arm64:
 
 build-installer-release-arm64:
   needs:
+    - *default_installer_needs
     - generate-guest-holes
     - build-release-arm64
   extends:
@@ -374,6 +384,7 @@ build-installer-release-arm64:
 
 build-BTI-installer-x64:
   needs:
+    - *default_installer_needs
     - build-bti-x64
   except:
     - master
