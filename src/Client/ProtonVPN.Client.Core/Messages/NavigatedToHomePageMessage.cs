@@ -17,33 +17,6 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Microsoft.UI.Xaml;
-using ProtonVPN.Client.Core.Bases;
-using ProtonVPN.Client.Core.Extensions;
-using ProtonVPN.Client.Services.Activation;
+namespace ProtonVPN.Client.Core.Messages;
 
-namespace ProtonVPN.Client.UI.Dialogs.NpsSurvey;
-
-public sealed partial class NpsSurveyWindow : IFocusAware
-{
-    public NpsSurveyWindowActivator WindowActivator { get; }
-
-    public NpsSurveyWindow()
-    {
-        WindowActivator = App.GetService<NpsSurveyWindowActivator>();
-
-        InitializeComponent();
-
-        WindowActivator.Initialize(this);
-    }
-
-    public void OnFocusChanged()
-    {
-        WindowContainer.TitleBarOpacity = this.GetTitleBarOpacity();
-    }
-
-    public bool IsFocused()
-    {
-        return WindowActivator.IsWindowFocused;
-    }
-}
+public class NavigatedToHomePageMessage;
