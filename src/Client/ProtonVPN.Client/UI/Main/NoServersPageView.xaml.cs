@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025 Proton AG
  *
  * This file is part of ProtonVPN.
@@ -17,18 +17,37 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProtonVPN.StatisticalEvents.Contracts.Dimensions;
-using ProtonVPN.StatisticalEvents.Dimensions.Mappers;
+using Microsoft.UI.Xaml;
+using ProtonVPN.Client.Core.Bases;
 
-namespace ProtonVPN.StatisticalEvents.Tests.DimensionMapping;
+namespace ProtonVPN.Client.UI.Main;
 
-[TestClass]
-public class VpnTriggerDimensionlMapperTest : DimensionMapperTestBase<VpnTriggerDimension, VpnTriggerDimensionMapper>
+public sealed partial class NoServersPageView : IContextAware
 {
-    protected override Func<VpnTriggerDimensionMapper, VpnTriggerDimension?, string> MapFunction => (mapper, value) => mapper.Map(value);
+    public NoServersPageViewModel ViewModel { get; }
 
-    protected override IEnumerable<VpnTriggerDimension> ValuesToIgnore => [
-        VpnTriggerDimension.Undefined,
-    ];
+    public NoServersPageView()
+    {
+        ViewModel = App.GetService<NoServersPageViewModel>();
+
+        InitializeComponent();
+
+        Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+    }
+
+    public object GetContext()
+    {
+        return ViewModel;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        ViewModel.Activate();
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        ViewModel.Deactivate();
+    }
 }
