@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Proton AG
+ * Copyright (c) 2025 Proton AG
  *
  * This file is part of ProtonVPN.
  *
@@ -17,12 +17,11 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net;
+namespace ProtonVPN.OperatingSystems.NRPT.Contracts;
 
-namespace ProtonVPN.Vpn.Gateways;
-
-public interface IGatewayCache
+/// <summary>Name Resolution Policy Table (NRPT) invoker</summary>
+public interface INrptInvoker
 {
-    public IPAddress Get();
-    public void Save(IPAddress defaultGateway);
+    public void CreateRule(string nameServers);
+    public void DeleteRule();
 }

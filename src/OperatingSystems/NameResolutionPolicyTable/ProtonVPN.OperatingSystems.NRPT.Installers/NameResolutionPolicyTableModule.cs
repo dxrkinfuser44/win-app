@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Proton AG
+ * Copyright (c) 2025 Proton AG
  *
  * This file is part of ProtonVPN.
  *
@@ -17,12 +17,14 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net;
+using Autofac;
 
-namespace ProtonVPN.Vpn.Gateways;
+namespace ProtonVPN.OperatingSystems.NRPT.Installers;
 
-public interface IGatewayCache
+public class NameResolutionPolicyTableModule : Module
 {
-    public IPAddress Get();
-    public void Save(IPAddress defaultGateway);
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.RegisterType<NrptInvoker>().AsImplementedInterfaces().SingleInstance();
+    }
 }

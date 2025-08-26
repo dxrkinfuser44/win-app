@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Proton AG
+ * Copyright (c) 2025 Proton AG
  *
  * This file is part of ProtonVPN.
  *
@@ -17,12 +17,10 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Net;
+using ProtonVPN.Configurations.Contracts;
 
-namespace ProtonVPN.Vpn.Gateways;
+namespace ProtonVPN.Vpn.OpenVpn.DnsServers;
 
-public interface IGatewayCache
+public interface IOpenVpnDnsServersCreator : IDnsServersCreator
 {
-    public IPAddress Get();
-    public void Save(IPAddress defaultGateway);
 }
