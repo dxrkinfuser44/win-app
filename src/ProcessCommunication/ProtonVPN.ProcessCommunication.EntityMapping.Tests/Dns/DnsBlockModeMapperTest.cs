@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2025 Proton AG
+ * Copyright (c) 2023 Proton AG
  *
  * This file is part of ProtonVPN.
  *
@@ -17,11 +17,20 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ProtonVPN.OperatingSystems.NRPT.Contracts;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProtonVPN.Common.Core.Dns;
+using ProtonVPN.EntityMapping.Contracts;
+using ProtonVPN.ProcessCommunication.Contracts.Entities.Dns;
+using ProtonVPN.ProcessCommunication.EntityMapping.Dns;
+using ProtonVPN.ProcessCommunication.EntityMapping.Tests.Common;
 
-/// <summary>Name Resolution Policy Table (NRPT) invoker</summary>
-public interface INrptInvoker
+namespace ProtonVPN.ProcessCommunication.EntityMapping.Tests.Dns;
+
+[TestClass]
+public class DnsBlockModeMapperTest : EnumMapperTestBase<DnsBlockMode, DnsBlockModeIpcEntity>
 {
-    public bool CreateRule(string nameServers);
-    public bool DeleteRule();
+    protected override IMapper<DnsBlockMode, DnsBlockModeIpcEntity> CreateMapper()
+    {
+        return new DnsBlockModeMapper();
+    }
 }

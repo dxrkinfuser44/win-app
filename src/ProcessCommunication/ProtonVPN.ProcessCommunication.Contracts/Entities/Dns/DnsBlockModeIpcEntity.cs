@@ -17,11 +17,19 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace ProtonVPN.OperatingSystems.NRPT.Contracts;
+using System.Runtime.Serialization;
 
-/// <summary>Name Resolution Policy Table (NRPT) invoker</summary>
-public interface INrptInvoker
+namespace ProtonVPN.ProcessCommunication.Contracts.Entities.Dns;
+
+[DataContract]
+public enum DnsBlockModeIpcEntity
 {
-    public bool CreateRule(string nameServers);
-    public bool DeleteRule();
+    [EnumMember]
+    Nrpt,
+
+    [EnumMember]
+    Callout,
+
+    [EnumMember]
+    Disabled,
 }

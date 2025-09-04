@@ -17,29 +17,16 @@
  * along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
-using ProtonVPN.Common.Core.Dns;
 using ProtonVPN.Common.Core.Networking;
-using ProtonVPN.Common.Legacy.KillSwitch;
-using ProtonVPN.ProcessCommunication.Contracts.Entities.Settings;
 
-namespace ProtonVPN.Service.Settings;
+namespace ProtonVPN.Vpn.NRPT;
 
-public interface IServiceSettings
+public interface INrptWrapper
 {
-    KillSwitchMode KillSwitchMode { get; }
-    SplitTunnelSettingsIpcEntity SplitTunnelSettings { get; }
-    bool Ipv6LeakProtection { get; }
-    bool IsIpv6Enabled { get; }
-    List<string> Ipv6Fragments { get; }
-    bool IsShareCrashReportsEnabled { get; }
-    bool IsLocalAreaNetworkAccessEnabled { get; }
-    VpnProtocol VpnProtocol { get; }
-    OpenVpnAdapter OpenVpnAdapter { get; }
-    DnsBlockMode DnsBlockMode { get; }
+    public void SetConnectionConfig(IReadOnlyCollection<string> customDns,
+        VpnProtocol vpnProtocol, bool isIpv6Supported);
 
-    event EventHandler<MainSettingsIpcEntity> SettingsChanged;
-
-    void Apply(MainSettingsIpcEntity settings);
+    public bool CreateRule();
+    public bool DeleteRule();
 }
