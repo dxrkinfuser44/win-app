@@ -41,38 +41,52 @@ jobs:
       - name: Optional: Decode signing PFX (if secret present)
         if: ${{ secrets.SIGNING_PFX != '' }}
         shell: pwsh
+        env:
+          SIGNING_PFX: ${{ secrets.SIGNING_PFX }}
         run: |
           Write-Host "Decoding SIGNING_PFX..."
-          $pfxBase64 = "${{ secrets.SIGNING_PFX }}"
+          $pfxBase64 = $env:SIGNING_PFX
+          if ([string]::IsNullOrEmpty($pfxBase64)) {
+            Write-Host "SIGNING_PFX is empty; skipping."
+            exit 0
+          }
           $pfxBytes = [System.Convert]::FromBase64String($pfxBase64)
-          $outPath = "$(Build.ArtifactStagingDirectory)\signing.pfx"
+          $outPath = Join-Path $env:GITHUB_WORKSPACE 'signing.pfx'
           [System.IO.File]::WriteAllBytes($outPath, $pfxBytes)
           Write-Host "PFX written to $outPath"
-        env:
-          Build_ArtifactStagingDirectory: ${{ github.workspace }}
 
       - name: Optional: Sign exe with signtool
         if: ${{ secrets.SIGNING_PFX != '' }}
         shell: pwsh
+        env:
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
-          $exe = Get-ChildItem artifacts\win-x64\*.exe | Select-Object -First 1
-          if ($null -eq $exe) { Write-Error "No exe found to sign"; exit 1 }
-          $pfxPath = "$(Build.ArtifactStagingDirectory)\signing.pfx"
-          $pfxPassword = "${{ secrets.SIGNING_PASSWORD }}"
+          $exe = Get-ChildItem -Path artifacts\win-x64 -Filter *.exe | Select-Object -First 1
+          if ($null -eq $exe) {
+            Write-Error "No exe found to sign"
+            exit 1
+          }
+          $pfxPath = Join-Path $env:GITHUB_WORKSPACE 'signing.pfx'
+          if (-not (Test-Path $pfxPath)) {
+            Write-Error "PFX not found at $pfxPath"
+            exit 1
+          }
+          $pfxPassword = $env:SIGNING_PASSWORD
           Write-Host "Signing $($exe.FullName)..."
           & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /fd SHA256 /a /f $pfxPath /p $pfxPassword /tr http://timestamp.digicert.com /td SHA256 $exe.FullName
-        env:
-          Build_ArtifactStagingDirectory: ${{ github.workspace }}
 
       - name: Create ZIP artifact
         shell: pwsh
+        env:
+          ZIP_NAME: artifacts/ProtonVpn-windows-x64-${{ github.ref_name }}.zip
         run: |
-          $zip = "artifacts/ProtonVpn-windows-x64-${{ github.ref_name }}.zip"
-          if (Test-Path $zip) { Remove-Item $zip }
+          $zip = $env:ZIP_NAME
+          if (Test-Path $zip) { Remove-Item $zip -Force }
           Compress-Archive -Path artifacts\win-x64\* -DestinationPath $zip
           Write-Host "ZIP created: $zip"
 
-      - name: Create GitHub Release and upload artifact
+      - name: Create GitHub Release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
