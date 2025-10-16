@@ -1,0 +1,46 @@
+{
+  "name": "advanced-locations",
+  "branch": "feature/advanced-locations",
+  "fork": "git@github.com:dxrkinfuser44/win-app.git",
+  "steps": [
+    { "step": "clone", "cmd": "git clone git@github.com:dxrkinfuser44/win-app.git && cd win-app" },
+    { "step": "branch", "cmd": "git checkout -b feature/advanced-locations" },
+    { "step": "discover-endpoint", "action": "inspect", "repo": "ProtonVPN/proton-vpn-gtk-app", "hint": "search for 'servers' or 'get_servers' or 'servers.json' strings" },
+    { "step": "add-files", "files": [
+      "src/Client/Models/ServerModel.cs",
+      "src/Client/Services/IServersClient.cs",
+      "src/Client/Services/ServersClient.cs",
+      "src/Client/Services/ServerCache.cs",
+      "src/Client/ViewModels/ServersViewModel.cs",
+      "src/Client/Views/AdvancedLocationsPage.xaml",
+      "src/Client/Views/AdvancedLocationsPage.xaml.cs"
+    ]},
+    { "step": "wire-di", "action": "register IServersClient, IServerCache, ServersViewModel" },
+    { "step": "extend-connection", "action": "add ConnectToServerAsync overload" },
+    { "step": "tests", "cmd": "dotnet test" },
+    { "step": "build", "cmd": "dotnet build" },
+    { "step": "publish-local", "cmd": "dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=true --self-contained true -o artifacts/win-x64" },
+    { "step": "sign-local-optional", "cmd": "signtool sign /fd SHA256 /a /tr http://timestamp.digicert.com /td SHA256 /f \"path\\to\\cert.pfx\" /p \"<pfx-password>\" \"artifacts\\win-x64\\ProtonVpn.exe\"", "optional": true },
+    { "step": "zip-artifact", "cmd": "powershell Compress-Archive -Path artifacts/win-x64\\* -DestinationPath artifacts/ProtonVpn-windows-x64-v1.2.3.zip" },
+    { "step": "commit", "cmd": "git add . && git commit -m \"feat: add advanced locations (per-server selection) + release workflow\" || true" },
+    { "step": "push", "cmd": "git push --set-upstream origin feature/advanced-locations" },
+    { "step": "create-pr", "cmd": "gh pr create --title \"feature: Advanced locations (per-server selection)\" --body-file AGENT_TASKS/advanced-locations-task.md --base main" },
+    { "step": "tag-for-release", "cmd": "git tag v1.0.0 && git push origin v1.0.0" }
+  ],
+  "release": {
+    "local_publish_command": "dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=true --self-contained true -o artifacts/win-x64",
+    "zip_command": "powershell Compress-Archive -Path artifacts/win-x64\\* -DestinationPath artifacts/ProtonVpn-windows-x64-v1.2.3.zip",
+    "upload_command_local": "gh release create v1.0.0 artifacts/ProtonVpn-windows-x64-v1.2.3.zip --title \"v1.0.0\" --notes \"Release built by CI\""
+  },
+  "ci": {
+    "workflow_path": ".github/workflows/release.yml",
+    "triggers": ["push_tag:v*"],
+    "secrets_required_for_signing": ["SIGNING_PFX", "SIGNING_PASSWORD"]
+  },
+  "featureFlag": { "key": "Features.AdvancedLocations", "default": false },
+  "tests": {
+    "unit": ["ServersClientTests", "ServersViewModelTests"],
+    "manual": ["open Advanced locations page", "connect to server", "verify UI", "verify artifact in release"]
+  },
+  "estimatedHours": 8
+}
